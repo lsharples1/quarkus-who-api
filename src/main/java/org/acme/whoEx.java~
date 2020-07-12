@@ -25,24 +25,25 @@ public class whoEx {
     public static String country;
     public static String gender;
 
-    /*
+    
     public static void main(String [] args) {
 
 	indCode = getIndCode();
 	//	indName = getIndName();
 	country =  getCountry();
 	gender = getGender();
-	System.out.println(getData());
+	System.out.println(getData(indCode, country, gender));
 	
     } //main
-    */
 
+    
+    /*
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String stats(@QueryParam(value = "indCode", defaultValue = "SA_0000001807") String ind, @QueryParam(value = "country", defaultValue = "AFG") String ctry, @QueryParam(value = "gender", default Value = "MLE") String gen) {
         return getData(ind, ctry, gen);
     }
-    
+    */
     public static String getGender() {
 
 	System.out.println("Enter the gender, MLE for male or FMLE for female");

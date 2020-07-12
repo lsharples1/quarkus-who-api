@@ -29,7 +29,7 @@ public class whoEx {
     public static void main(String [] args) {
 
 	indCode = getIndCode();
-	//	indName = getIndName();
+		indName = getIndName();
 	country =  getCountry();
 	gender = getGender();
 	System.out.println(getData(indCode, country, gender));
@@ -46,13 +46,13 @@ public class whoEx {
     */
     public static String getGender() {
 
-	System.out.println("Enter the gender, MLE for male or FMLE for female");
+	System.out.println("Enter the gender, MLE for male or FMLE for female:");
 	String gender = sc.nextLine();
 	return gender;
     }
 
     public static String getCountry() {
-	System.out.println("Enter the country to retrieve data from");
+	System.out.println("Enter the country to retrieve data from:");
 	String country = sc.nextLine();
     	return country;
     }
@@ -64,10 +64,11 @@ public class whoEx {
 	return code;
     }
     
-    /*
+    
     public static String getIndName() {
 	String ret = "";
 	try {
+	    
 	String urlS = "https://ghoapi.azureedge.net/api/Indicator";
 	URL url2 = new URL(urlS);
 	InputStreamReader read = new InputStreamReader(url2.openStream());
@@ -76,7 +77,7 @@ public class whoEx {
 	JsonArray allValues = root.getAsJsonArray("value");
 	JsonElement str = allValues.get(0);
 	for (int i = 0; i < allValues.size(); i++) {
-	    JsonElement c = allValues.get(0).getAsJsonObject().get("IndicatorCode");
+	    JsonElement c = allValues.get(i).getAsJsonObject().get("IndicatorCode");
 	    String cString = c.getAsString();
 	    if (cString.equals(indCode)) {
 		str = allValues.get(i).getAsJsonObject().get("IndicatorName");
@@ -90,11 +91,12 @@ public class whoEx {
 	return ret;
     } //getIndName
 	
-    */	
+    	
     
     public static String getData(String ind, String ctry, String gen) {
 
 	Double numPpl = -1.0;
+	String numM = "";
 	try {
 	String sUrl = "https://ghoapi.azureedge.net/api/" + ind + "?$filter=SpatialDim%20eq%20'" + ctry + "'%20and%20Dim1%20eq%20'" + gen +"'";
 	URL url = new URL(sUrl);
@@ -104,12 +106,12 @@ public class whoEx {
              JsonObject root = je.getAsJsonObject();
              JsonArray allValues = root.getAsJsonArray("value");
 	     JsonElement num = allValues.get(0).getAsJsonObject().get("Value");
-	     String numM = num.getAsString();
+	     numM = num.getAsString();
 	     numPpl = Double.parseDouble(numM);
 	} catch (Exception e) {
 	    System.out.println(e);
 	    System.out.println(e.getLocalizedMessage());
 	} //try catch
-	return "Cancer death rate per 100,000: " + numPpl;
+	return indName + ": " + numM;
     }
 }
