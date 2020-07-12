@@ -1,0 +1,115 @@
+package org.acme;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.net.URL;
+import java.io.InputStreamReader;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import java.util.Scanner;
+
+@Path("/stats")
+public class whoEx {
+
+    static Scanner sc = new Scanner(System.in);
+    public static String indCode;
+    public static String indName;
+    public static String country;
+    public static String gender;
+
+    
+    public static void main(String [] args) {
+
+	indCode = getIndCode();
+	//	indName = getIndName();
+	country =  getCountry();
+	gender = getGender();
+	System.out.println(getData(indCode, country, gender));
+	
+    } //main
+
+    
+    /*
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String stats(@QueryParam(value = "indCode", defaultValue = "SA_0000001807") String ind, @QueryParam(value = "country", defaultValue = "AFG") String ctry, @QueryParam(value = "gender", default Value = "MLE") String gen) {
+        return getData(ind, ctry, gen);
+    }
+    */
+    public static String getGender() {
+
+	System.out.println("Enter the gender, MLE for male or FMLE for female");
+	String gender = sc.nextLine();
+	return gender;
+    }
+
+    public static String getCountry() {
+	System.out.println("Enter the country to retrieve data from");
+	String country = sc.nextLine();
+    	return country;
+    }
+
+    public static String getIndCode() {
+	
+	System.out.println("Enter the indicator code:");
+	String code = sc.nextLine();
+	return code;
+    }
+    
+    /*
+    public static String getIndName() {
+	String ret = "";
+	try {
+	String urlS = "https://ghoapi.azureedge.net/api/Indicator";
+	URL url2 = new URL(urlS);
+	InputStreamReader read = new InputStreamReader(url2.openStream());
+	JsonElement je = JsonParser.parseReader(read);
+	JsonObject root = je.getAsJsonObject();
+	JsonArray allValues = root.getAsJsonArray("value");
+	JsonElement str = allValues.get(0);
+	for (int i = 0; i < allValues.size(); i++) {
+	    JsonElement c = allValues.get(0).getAsJsonObject().get("IndicatorCode");
+	    String cString = c.getAsString();
+	    if (cString.equals(indCode)) {
+		str = allValues.get(i).getAsJsonObject().get("IndicatorName");
+	    } //if
+	} //for
+	ret = str.getAsString();
+	} catch (Exception e) {
+	    System.out.println(e.getMessage());
+	} //catch
+
+	return ret;
+    } //getIndName
+	
+    */	
+    
+    public static String getData(String ind, String ctry, String gen) {
+
+	Double numPpl = -1.0;
+	try {
+	String sUrl = "https://ghoapi.azureedge.net/api/" + ind + "?$filter=SpatialDim%20eq%20'" + ctry + "'%20and%20Dim1%20eq%20'" + gen +"'";
+	URL url = new URL(sUrl);
+	InputStreamReader reader = new InputStreamReader(url.openStream());
+       
+             JsonElement je = JsonParser.parseReader(reader);
+             JsonObject root = je.getAsJsonObject();
+             JsonArray allValues = root.getAsJsonArray("value");
+	     JsonElement num = allValues.get(0).getAsJsonObject().get("Value");
+	     String numM = num.getAsString();
+	     numPpl = Double.parseDouble(numM);
+	} catch (Exception e) {
+	    System.out.println(e);
+	    System.out.println(e.getLocalizedMessage());
+	} //try catch
+	return "Cancer death rate per 100,000: " + numPpl;
+    }
+}
